@@ -1,0 +1,93 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pyauthkit"
+version = "0.1.0"
+description = "Framework-agnostic authentication toolkit: JWT access/refresh rotation, password hashing, account lockout, one-time codes and FastAPI guards/route builders."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{ name = "alonsovndev" }]
+keywords = ["authentication", "auth", "jwt", "fastapi", "security", "password", "refresh-token", "bcrypt", "rbac"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Security",
+    "Typing :: Typed",
+]
+dependencies = [
+    "PyJWT>=2.8",
+    "bcrypt>=4.1",
+    "pydantic>=2.5",
+    "email-validator>=2.1",
+]
+
+[project.optional-dependencies]
+fastapi = [
+    "fastapi>=0.110",
+]
+sqlalchemy = [
+    "SQLAlchemy>=2.0",
+]
+all = [
+    "fastapi>=0.110",
+    "SQLAlchemy>=2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/alonsovndev/python-auth-library"
+Repository = "https://github.com/alonsovndev/python-auth-library"
+Issues = "https://github.com/alonsovndev/python-auth-library/issues"
+Changelog = "https://github.com/alonsovndev/python-auth-library/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pyauthkit"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F", "I", "B", "C4", "UP", "ARG", "SIM", "TC", "PTH", "RUF", "N",
+    "S", "DTZ", "T20", "PIE", "COM", "Q", "RET",
+]
+ignore = [
+    "E501",
+    "COM812",
+    # Pydantic relies on these imports at runtime to resolve model annotations.
+    "TC001",
+    "TC002",
+    "TC003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106", "ARG001"]
+"examples/**" = ["T201", "S105", "S106"]
+"src/pyauthkit/sqlalchemy/**" = ["RUF012"]
+
+[tool.mypy]
+strict = true
+files = ["src"]
+
+[[tool.mypy.overrides]]
+module = ["jwt.*", "bcrypt.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+filterwarnings = ["error"]
